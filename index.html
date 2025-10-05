@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1SafeRE - Realtor Safety</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="splash" class="screen active">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh">
+        <svg width="220" height="200" viewBox="0 0 550 500" style="filter:drop-shadow(0 0 30px rgba(0,179,255,.6));margin-bottom:32px">
+            <path fill="#00B3FF" stroke="#00B3FF" stroke-width="25" fill="none" d="M275 60 L80 130 L80 250 C80 350 150 430 275 480 C400 430 470 350 470 250 L470 130 Z"/>
+        </svg>
+        <h1 style="font-size:72px;font-weight:700;margin-bottom:8px;letter-spacing:-2px">1SAFE<span style="color:#FFC107">RE</span></h1>
+        <p style="color:#00B3FF;font-size:20px;margin-bottom:48px;letter-spacing:2px">REALTOR SAFETY FIRST</p>
+        <button class="btn btn-primary" onclick="app.showScreen('pricing')">TAP TO START</button>
+    </div>
+</div>
+
+<div id="pricing" class="screen">
+    <div class="container" style="padding-top:48px">
+        <h1 style="font-size:36px;text-align:center;margin-bottom:8px">CHOOSE YOUR PLAN</h1>
+        <p style="color:#9ca3af;text-align:center;margin-bottom:48px">Protect yourself on every showing</p>
+        <div class="price-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <h2 style="font-size:24px">TRIAL</h2>
+                <span style="background:#FFD700;color:#0b132b;padding:4px 16px;border-radius:20px;font-size:12px">10 DAYS FREE</span>
+            </div>
+            <p style="font-size:36px;font-weight:700;margin-bottom:24px">$0</p>
+            <ul style="list-style:none;margin-bottom:24px">
+                <li style="margin-bottom:12px">✓ 1 Emergency Contact</li>
+                <li style="margin-bottom:12px">✓ Check-In/Out System</li>
+                <li style="margin-bottom:12px">✓ SOS Alert + Email/SMS</li>
+            </ul>
+            <button class="btn" style="width:100%;padding:16px;background:#374151;color:#fff;border-radius:50px;font-size:18px" onclick="app.selectPlan('trial')">START FREE TRIAL</button>
+        </div>
+        <div class="price-card featured">
+            <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#FFD700;padding:4px 24px;border-radius:20px;color:#0b132b;font-size:12px">RECOMMENDED</div>
+            <h2 style="font-size:24px;margin-bottom:16px;margin-top:8px">PRO</h2>
+            <p style="font-size:36px;font-weight:700;margin-bottom:24px">$3<span style="font-size:18px">/month</span></p>
+            <ul style="list-style:none;margin-bottom:24px">
+                <li style="margin-bottom:12px;font-weight:600">✓ Unlimited Contacts</li>
+                <li style="margin-bottom:12px">✓ All Features</li>
+                <li style="margin-bottom:12px">✓ Priority Support</li>
+            </ul>
+            <button class="btn" style="width:100%;padding:16px;background:#fff;color:#00B3FF;border-radius:50px;font-size:18px;font-weight:700" onclick="app.selectPlan('pro')">START WITH PRO</button>
+        </div>
+        <p style="text-align:center;color:#9ca3af;margin-top:32px">Already have an account? <span style="color:#00B3FF;cursor:pointer" onclick="app.showScreen('login')">Log In</span></p>
+    </div>
+</div>
+
+<div id="register" class="screen">
+    <div class="container" style="padding-top:48px">
+        <button class="back-btn" onclick="app.showScreen('pricing')">← Back</button>
+        <h1 style="font-size:36px;margin-bottom:8px">CREATE ACCOUNT</h1>
+        <p style="color:#9ca3af;margin-bottom:32px">Join thousands of protected Realtors</p>
+        <input type="text" class="input" placeholder="Full Name" id="rn">
+        <input type="email" class="input" placeholder="Email" id="re">
+        <input type="password" class="input" placeholder="Password (6+ chars)" id="rp">
+        <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="app.register()">CREATE ACCOUNT</button>
+    </div>
+</div>
+
+<div id="login" class="screen">
+    <div class="container" style="padding-top:48px">
+        <button class="back-btn" onclick="app.showScreen('pricing')">← Back</button>
+        <h1 style="font-size:36px;margin-bottom:8px">WELCOME BACK</h1>
+        <input type="email" class="input" placeholder="Email" id="le">
+        <input type="password" class="input" placeholder="Password" id="lp">
+        <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="app.login()">LOG IN</button>
+    </div>
+</div>
+
+<div id="home" class="screen">
+    <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+            <div><h1 style="font-size:24px">1SafeRE</h1><p style="color:#9ca3af;font-size:14px">Stay protected, <span id="un">User</span></p></div>
+            <div style="display:flex;gap:8px"><span id="tb" style="background:#FFD700;color:#0b132b;padding:4px 12px;border-radius:20px;font-size:12px;display:none">TRIAL</span><button style="background:#1a1f36;border:none;padding:8px;border-radius:50%;cursor:pointer" onclick="app.showScreen('contacts')">👥</button></div>
+        </div>
+        <div class="police-light"></div>
+        <div class="status-pill" id="st">
+            <div style="display:flex;align-items:center">
+                <div style="width:12px;height:12px;border-radius:50%;background:#6b7280;margin-right:12px" id="dot"></div>
+                <div><p style="font-weight:700" id="stx">NOT CHECKED IN</p><p style="font-size:12px;color:#d1d5db">Start when you arrive</p></div>
+            </div>
+        </div>
+        <div id="map"></div>
+        <p id="addr" style="color:#9ca3af;font-size:13px;margin-top:-8px;margin-bottom:24px;text-align:center">📍 Getting location...</p>
+        <div class="card" id="tc" style="display:none">
+            <div style="position:relative;width:128px;height:128px;margin:0 auto 24px">
+                <svg width="128" height="128" style="transform:rotate(-90deg)">
+                    <circle cx="64" cy="64" r="56" fill="none" stroke="#1c2541" stroke-width="8"/>
+                    <circle id="pg" cx="64" cy="64" r="56" fill="none" stroke="#00B3FF" stroke-width="8" stroke-dasharray="351.86" stroke-dashoffset="0"/>
+                </svg>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+                    <p style="font-size:36px;font-weight:700" id="tm">30:00</p>
+                    <p style="font-size:12px;color:#9ca3af">remaining</p>
+                </div>
+            </div>
+            <div style="display:flex;gap:12px">
+                <button class="btn" style="flex:1;padding:12px;background:#374151;color:#fff;border-radius:12px" onclick="app.addTime()">+ 15 MIN</button>
+                <button class="btn" style="flex:1;padding:12px;background:#059669;color:#fff;border-radius:12px" onclick="app.checkOut()">CHECK OUT</button>
+            </div>
+        </div>
+        <button class="btn btn-primary" id="cb" style="width:100%;padding:20px;margin-bottom:24px;font-size:20px" onclick="app.startCheckIn()">📍 START CHECK-IN</button>
+        <button class="btn-sos" onclick="app.triggerSOS()">⚠ EMERGENCY SOS</button>
+    </div>
+    <div class="bottom-nav">
+        <button class="nav-btn active" onclick="app.navTo('home',event)">🛡️<br>HOME</button>
+        <button class="nav-btn" onclick="app.navTo('contacts',event)">👥<br>CONTACTS</button>
+        <button class="nav-btn" onclick="app.navTo('help',event)">❓<br>HELP</button>
+    </div>
+</div>
+
+<div id="contacts" class="screen">
+    <div class="container">
+        <button class="back-btn" onclick="app.showScreen('home')">← Back</button>
+        <h1 style="font-size:32px;margin-bottom:8px">EMERGENCY CONTACTS</h1>
+        <p style="color:#9ca3af;margin-bottom:24px" id="pt">Trial: 1 contact max</p>
+        <div id="cl"></div>
+        <button class="btn" id="ab" style="width:100%;padding:16px;border:2px dashed #374151;background:transparent;color:#9ca3af;border-radius:16px;margin-top:16px" onclick="app.showScreen('add-contact')">+ ADD CONTACT</button>
+        <div id="ub" style="display:none;background:rgba(255,215,0,.2);border:1px solid #FFD700;border-radius:16px;padding:20px;margin-top:24px">
+            <p style="color:#FFD700;font-weight:700;margin-bottom:8px">UPGRADE TO PRO</p>
+            <p style="color:#d1d5db;font-size:14px;margin-bottom:12px">Unlimited contacts for $3/month</p>
+            <button class="btn" style="padding:8px 24px;background:#FFD700;color:#0b132b;border-radius:50px;font-weight:700" onclick="app.upgrade()">UPGRADE NOW</button>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <button class="nav-btn" onclick="app.navTo('home',event)">🛡️<br>HOME</button>
+        <button class="nav-btn active" onclick="app.navTo('contacts',event)">👥<br>CONTACTS</button>
+        <button class="nav-btn" onclick="app.navTo('help',event)">❓<br>HELP</button>
+    </div>
+</div>
+
+<div id="add-contact" class="screen">
+    <div class="container">
+        <button class="back-btn" onclick="app.showScreen('contacts')">← Back</button>
+        <h1 style="font-size:32px;margin-bottom:24px">ADD CONTACT</h1>
+        <input type="text" class="input" placeholder="Contact Name" id="cn">
+        <input type="tel" class="input" placeholder="Phone" id="cp">
+        <input type="email" class="input" placeholder="Email" id="ce">
+        <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="app.saveContact()">SAVE CONTACT</button>
+    </div>
+</div>
+
+<div id="help" class="screen">
+    <div class="container">
+        <button class="back-btn" onclick="app.showScreen('home')">← Back</button>
+        <h1 style="font-size:32px;margin-bottom:24px">HELP & SAFETY</h1>
+        <div style="background:#1a1f36;border-radius:16px;padding:20px;margin-bottom:16px">
+            <h3 style="font-size:20px;color:#00B3FF;margin-bottom:12px">How It Works</h3>
+            <p style="color:#d1d5db;font-size:14px;line-height:1.6">1. Add emergency contacts<br>2. Check in before showings<br>3. Timer alerts before expiry<br>4. SOS triggers instant alerts</p>
+        </div>
+        <div style="background:rgba(255,43,78,.2);border:1px solid #FF2B4E;border-radius:16px;padding:20px">
+            <h3 style="font-size:20px;color:#FF2B4E;margin-bottom:12px">Safety Tips</h3>
+            <p style="color:#d1d5db;font-size:14px;line-height:1.6">• Always check in<br>• Keep phone charged<br>• Trust your instincts<br>• Verify clients</p>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <button class="nav-btn" onclick="app.navTo('home',event)">🛡️<br>HOME</button>
+        <button class="nav-btn" onclick="app.navTo('contacts',event)">👥<br>CONTACTS</button>
+        <button class="nav-btn active" onclick="app.navTo('help',event)">❓<br>HELP</button>
+    </div>
+</div>
+
+<div id="sos" class="screen" style="background:linear-gradient(to bottom,#FF2B4E,#E01B3F);padding-bottom:0">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center">
+        <h1 style="font-size:48px;font-weight:700;margin-bottom:16px;animation:pulse 2s infinite">⚠ SOS ACTIVATED</h1>
+        <p style="margin-bottom:32px;font-size:18px">📧 Emails sent!<br>📱 SMS ready</p>
+        <div style="background:rgba(255,255,255,.2);border-radius:16px;padding:24px;margin-bottom:24px;width:100%;max-width:400px">
+            <p style="font-weight:700;margin-bottom:12px">ALERTED:</p>
+            <div id="sl"></div>
+        </div>
+        <div style="background:rgba(255,255,255,.2);border-radius:16px;padding:24px;margin-bottom:32px;width:100%;max-width:400px">
+            <p style="font-weight:700;margin-bottom:8px">YOUR LOCATION:</p>
+            <p style="font-size:14px" id="sa"></p>
+        </div>
+        <button class="btn" style="padding:16px 48px;background:#fff;color:#FF2B4E;border-radius:50px;font-size:20px;font-weight:700;margin-bottom:16px" onclick="app.showScreen('home')">CANCEL</button>
+        <button class="btn" style="padding:16px 48px;background:transparent;border:2px solid #fff;color:#fff;border-radius:50px;font-size:20px;font-weight:700" onclick="window.location.href='tel:911'">CALL 911</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
