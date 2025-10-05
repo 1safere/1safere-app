@@ -98,10 +98,27 @@
         <button class="back-btn" onclick="app.showScreen('pricing')">← Back</button>
         <h1 style="font-size:36px;margin-bottom:8px">CREATE ACCOUNT</h1>
         <p style="color:#9ca3af;margin-bottom:32px">Join thousands of protected Realtors</p>
+        
         <input type="text" class="input" placeholder="Full Name" id="rn">
         <input type="email" class="input" placeholder="Email" id="re">
-        <input type="password" class="input" placeholder="Password (6+ chars)" id="rp">
-        <button class="btn btn-primary" style="width:100%;margin-top:24px" onclick="app.register()">CREATE ACCOUNT</button>
+        
+        <div style="position:relative;margin-bottom:16px">
+            <input type="password" class="input" style="margin-bottom:0;padding-right:50px" placeholder="Password (6+ chars)" id="rp">
+            <button type="button" onclick="app.togglePassword('rp', 'eye1')" style="position:absolute;right:16px;top:16px;background:none;border:none;cursor:pointer;color:#9ca3af;font-size:20px">
+                <span id="eye1">👁️</span>
+            </button>
+        </div>
+        
+        <div style="position:relative;margin-bottom:16px">
+            <input type="password" class="input" style="margin-bottom:0;padding-right:50px" placeholder="Confirm Password" id="rpc">
+            <button type="button" onclick="app.togglePassword('rpc', 'eye2')" style="position:absolute;right:16px;top:16px;background:none;border:none;cursor:pointer;color:#9ca3af;font-size:20px">
+                <span id="eye2">👁️</span>
+            </button>
+        </div>
+        
+        <p id="pass-match" style="color:#FF2B4E;font-size:14px;margin-bottom:16px;display:none">Passwords do not match</p>
+        
+        <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="app.register()">CREATE ACCOUNT</button>
     </div>
 </div>
 
@@ -115,7 +132,6 @@
     </div>
 </div>
 
-<div id="home" class="screen">
 <div id="home" class="screen">
     <div class="container">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
