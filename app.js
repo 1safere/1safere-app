@@ -43,15 +43,37 @@ const app = {
     
     selectPlan(p) { this.u.plan = p; this.showScreen('register'); },
     
+    togglePassword(inputId, eyeId) {
+        const input = document.getElementById(inputId);
+        const eye = document.getElementById(eyeId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            eye.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            eye.textContent = '👁️';
+        }
+    },
+    
     async register() {
         const n = document.getElementById('rn').value;
         const e = document.getElementById('re').value;
         const p = document.getElementById('rp').value;
+        const pc = document.getElementById('rpc').value;
         
         if (!n || !e || p.length < 6) { 
             this.notif('Fill all fields (password 6+ chars)', 'error'); 
             return; 
         }
+        
+        if (p !== pc) {
+            document.getElementById('pass-match').style.display = 'block';
+            this.notif('Passwords do not match', 'error');
+            return;
+        }
+        
+        document.getElementById('pass-match').style.display = 'none';
         
         try {
             const user = await registerUser(n, e, p, this.u.plan);
