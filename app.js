@@ -1,5 +1,6 @@
 import { auth, db, registerUser, loginUser, logoutUser, getUserData, addContact, removeContact, upgradeToPro, saveCheckIn } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
 const CONFIG = {
     emailjs: {
         publicKey: 'ChER9DcNgZNpoWa3e',
@@ -103,7 +104,6 @@ const app = {
         document.getElementById('tc').style.display = 'block';
         document.getElementById('cb').style.display = 'none';
         
-        // Save check-in to Firebase
         if (this.u.userId) {
             saveCheckIn(this.u.userId, this.u.loc, this.u.address);
         }
@@ -190,66 +190,79 @@ const app = {
         }
     },
     
-    triggerSOS() {
-    if (this.u.contacts.length === 0) { 
-        this.notif('No contacts!', 'error'); 
-        this.showScreen('contacts'); 
-        return;
-    }
-    
-    // Get fresh location when SOS is triggered
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                this.sendSOSAlerts(position.coords.latitude, position.coords.longitude);
-            },
-            (error) => {
-                console.error('Location error on SOS:', error);
-                // Use stored location or fallback
-                const lat = this.u.loc?.lat || 40.7128;
-                const lng = this.u.loc?.lng || -74.0060;
-                this.sendSOSAlerts(lat, lng);
-            },
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-        );
-    } else {
-        const lat = this.u.loc?.lat || 40.7128;
-        const lng = this.u.loc?.lng || -74.0060;
-        this.sendSOSAlerts(lat, lng);
-    }
-},
-
-sendSOSAlerts(lat, lng) {
-    const ts = new Date().toLocaleString();
-    const ml = `https://maps.google.com/?q=${lat},${lng}`;
-    const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    
-    console.log('Sending SOS with location:', { lat, lng, addr });
-    
-    this.u.contacts.forEach(c => {
-        if (c.email) {
-            emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
-                to_email: c.email, 
-                to_name: c.name, 
-                user_name: this.u.name,
-                latitude: lat.toFixed(6), 
-                longitude: lng.toFixed(6), 
-                address: addr, 
-                time: ts, 
-                maps_link: ml
-            }).then(
-                () => console.log('Email sent to:', c.email),
-                (error) => console.error('Email failed:', error)
-            );
+    async triggerSOS() {
+        if (this.u.contacts.length === 0) { 
+            this.notif('No contacts!', 'error'); 
+            this.showScreen('contacts'); 
+            return;
         }
-        const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nLocation: ${addr}\nCoordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\nMaps: ${ml}\nTime: ${ts}\n\nCheck on me immediately!`);
-        setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
-    });
-    
-    document.getElementById('sl').innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
-    document.getElementById('sa').textContent = addr;
-    this.showScreen('sos');
-},
+        
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    await this.sendSOSAlerts(position.coords.latitude, position.coords.longitude);
+                },
+                async (error) => {
+                    console.error('Location error on SOS:', error);
+                    const lat = this.u.loc?.lat || 40.7128;
+                    const lng = this.u.loc?.lng || -74.0060;
+                    await this.sendSOSAlerts(lat, lng);
+                },
+                { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+            );
+        } else {
+            const lat = this.u.loc?.lat || 40.7128;
+            const lng = this.u.loc?.lng || -74.0060;
+            await this.sendSOSAlerts(lat, lng);
+        }
+    },
+
+    async sendSOSAlerts(lat, lng) {
+        const ts = new Date().toLocaleString();
+        const ml = `https://maps.google.com/?q=${lat},${lng}`;
+        
+        let addr = '';
+        try {
+            const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${CONFIG.mapbox.accessToken}`);
+            const data = await res.json();
+            if (data.features && data.features[0]) {
+                addr = data.features[0].place_name;
+            }
+        } catch (e) {
+            console.error('Geocoding failed:', e);
+        }
+        
+        if (!addr) {
+            addr = `Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        }
+        
+        console.log('Sending SOS with:', { address: addr, lat, lng });
+        
+        this.u.contacts.forEach(c => {
+            if (c.email) {
+                emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
+                    to_email: c.email, 
+                    to_name: c.name, 
+                    user_name: this.u.name,
+                    latitude: lat.toFixed(6), 
+                    longitude: lng.toFixed(6), 
+                    address: addr,
+                    time: ts, 
+                    maps_link: ml
+                }).then(
+                    () => console.log('Email sent to:', c.email),
+                    (error) => console.error('Email failed:', error)
+                );
+            }
+            
+            const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nAddress: ${addr}\n\nCoordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\n\nGoogle Maps: ${ml}\n\nTime: ${ts}\n\nCheck on me immediately!`);
+            setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
+        });
+        
+        document.getElementById('sl').innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
+        document.getElementById('sa').innerHTML = `<strong>${addr}</strong><br><small>${lat.toFixed(6)}, ${lng.toFixed(6)}</small>`;
+        this.showScreen('sos');
+    },
     
     async upgrade() {
         if (confirm('Upgrade to Pro for $3/month?\n\n(Demo - no charge)')) {
@@ -261,84 +274,36 @@ sendSOSAlerts(lat, lng) {
             }
             
             this.notif('Upgraded to Pro!'); 
-async triggerSOS() {
-    if (this.u.contacts.length === 0) { 
-        this.notif('No contacts!', 'error'); 
-        this.showScreen('contacts'); 
-        return;
-    }
-    
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                await this.sendSOSAlerts(position.coords.latitude, position.coords.longitude);
-            },
-            async (error) => {
-                console.error('Location error on SOS:', error);
-                const lat = this.u.loc?.lat || 40.7128;
-                const lng = this.u.loc?.lng || -74.0060;
-                await this.sendSOSAlerts(lat, lng);
-            },
-            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-        );
-    } else {
-        const lat = this.u.loc?.lat || 40.7128;
-        const lng = this.u.loc?.lng || -74.0060;
-        await this.sendSOSAlerts(lat, lng);
-    }
-},
-
-async sendSOSAlerts(lat, lng) {
-    const ts = new Date().toLocaleString();
-    const ml = `https://maps.google.com/?q=${lat},${lng}`;
-    
-    // Try to get physical address
-    let addr = '';
-    try {
-        const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${CONFIG.mapbox.accessToken}`);
-        const data = await res.json();
-        if (data.features && data.features[0]) {
-            addr = data.features[0].place_name;
+            this.updateContacts();
         }
-    } catch (e) {
-        console.error('Geocoding failed:', e);
-    }
+    },
     
-    // Fallback if no address found
-    if (!addr) {
-        addr = `Coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    }
-    
-    console.log('Sending SOS with:', { address: addr, lat, lng });
-    
-    this.u.contacts.forEach(c => {
-        if (c.email) {
-            emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
-                to_email: c.email, 
-                to_name: c.name, 
-                user_name: this.u.name,
-                latitude: lat.toFixed(6), 
-                longitude: lng.toFixed(6), 
-                address: addr,
-                time: ts, 
-                maps_link: ml
-            }).then(
-                () => console.log('Email sent to:', c.email),
-                (error) => console.error('Email failed:', error)
-            );
+    initMap(lat, lng) {
+        if (!this.map) {
+            this.map = new mapboxgl.Map({ container: 'map', style: 'mapbox://styles/mapbox/dark-v11', center: [lng, lat], zoom: 15, attributionControl: false });
+            this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
         }
-        
-        // Include both address and coordinates in SMS
-        const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nAddress: ${addr}\n\nCoordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}\n\nGoogle Maps: ${ml}\n\nTime: ${ts}\n\nCheck on me immediately!`);
-        setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
-    });
+        if (this.marker) this.marker.remove();
+        const el = document.createElement('div');
+        el.style.width = '32px'; el.style.height = '32px'; el.style.borderRadius = '50%';
+        el.style.background = 'linear-gradient(135deg, #00B3FF, #0099DD)';
+        el.style.border = '3px solid #fff'; el.style.boxShadow = '0 0 20px rgba(0, 179, 255, 0.8)';
+        this.marker = new mapboxgl.Marker({ element: el }).setLngLat([lng, lat]).addTo(this.map);
+        this.map.flyTo({ center: [lng, lat], zoom: 15 }); this.reverseGeocode(lat, lng);
+    },
     
-    document.getElementById('sl').innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
-    document.getElementById('sa').innerHTML = `<strong>${addr}</strong><br><small>${lat.toFixed(6)}, ${lng.toFixed(6)}</small>`;
-    this.showScreen('sos');
-},
+    async reverseGeocode(lat, lng) {
+        try {
+            const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${CONFIG.mapbox.accessToken}`);
+            const data = await res.json();
+            if (data.features && data.features[0]) {
+                this.u.address = data.features[0].place_name;
+                document.getElementById('addr').textContent = '📍 ' + this.u.address;
+            }
+        } catch (e) { document.getElementById('addr').textContent = `📍 ${lat.toFixed(4)}, ${lng.toFixed(4)}`; }
+    }
+};
 
-// Listen for auth state changes
 onAuthStateChanged(auth, async (user) => {
     if (user && !app.u.userId) {
         const userData = await getUserData(user.uid);
@@ -354,9 +319,8 @@ onAuthStateChanged(auth, async (user) => {
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
         p => { app.u.loc = { lat: p.coords.latitude, lng: p.coords.longitude }; app.initMap(app.u.loc.lat, app.u.loc.lng); },
-        () => { const f = { lat: 40.7128, lng: -74.006 }; app.u.loc = f; app.initMap(f.lat, f.lng); document.getElementById('addr').textContent = '📍 Location unavailable'; }
+        () => { const f = { lat: 40.7128, lng: -74.0060 }; app.u.loc = f; app.initMap(f.lat, f.lng); document.getElementById('addr').textContent = '📍 Location unavailable'; }
     );
 }
 
-// Make app globally accessible
 window.app = app;
