@@ -17,13 +17,53 @@
 <body>
 
 <div id="splash" class="screen active">
-    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh">
-        <svg width="220" height="200" viewBox="0 0 550 500" style="filter:drop-shadow(0 0 30px rgba(0,179,255,.6));margin-bottom:32px">
+    <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;overflow:hidden">
+        
+        <!-- Circuit board background -->
+        <svg class="circuit-bg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+            <!-- Vertical lines -->
+            <line x1="100" y1="0" x2="100" y2="600" stroke="#00B3FF" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2s ease-out"/>
+            <line x1="200" y1="0" x2="200" y2="600" stroke="#FF2B4E" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2.2s ease-out"/>
+            <line x1="300" y1="0" x2="300" y2="600" stroke="#00B3FF" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 1.8s ease-out"/>
+            <line x1="400" y1="0" x2="400" y2="600" stroke="#FF2B4E" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2.4s ease-out"/>
+            <line x1="500" y1="0" x2="500" y2="600" stroke="#00B3FF" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2s ease-out"/>
+            <line x1="600" y1="0" x2="600" y2="600" stroke="#FF2B4E" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2.3s ease-out"/>
+            <line x1="700" y1="0" x2="700" y2="600" stroke="#00B3FF" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 1.9s ease-out"/>
+            
+            <!-- Horizontal lines -->
+            <line x1="0" y1="100" x2="800" y2="100" stroke="#00B3FF" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2.1s ease-out"/>
+            <line x1="0" y1="200" x2="800" y2="200" stroke="#FF2B4E" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 1.7s ease-out"/>
+            <line x1="0" y1="300" x2="800" y2="300" stroke="#00B3FF" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2.3s ease-out"/>
+            <line x1="0" y1="400" x2="800" y2="400" stroke="#FF2B4E" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 2s ease-out"/>
+            <line x1="0" y1="500" x2="800" y2="500" stroke="#00B3FF" stroke-width="2" stroke-dasharray="1000" style="animation: pulseLines 1.8s ease-out"/>
+            
+            <!-- Circuit nodes -->
+            <circle cx="100" cy="100" r="8" fill="#00B3FF" opacity="0.8"/>
+            <circle cx="200" cy="200" r="8" fill="#FF2B4E" opacity="0.8"/>
+            <circle cx="300" cy="300" r="8" fill="#00B3FF" opacity="0.8"/>
+            <circle cx="400" cy="100" r="8" fill="#FF2B4E" opacity="0.8"/>
+            <circle cx="500" cy="400" r="8" fill="#00B3FF" opacity="0.8"/>
+            <circle cx="600" cy="200" r="8" fill="#FF2B4E" opacity="0.8"/>
+            <circle cx="700" cy="500" r="8" fill="#00B3FF" opacity="0.8"/>
+        </svg>
+        
+        <svg class="logo-powerup" width="220" height="200" viewBox="0 0 550 500" style="filter:drop-shadow(0 0 30px rgba(0,179,255,.6));margin-bottom:32px;position:relative;z-index:1">
             <path fill="#00B3FF" stroke="#00B3FF" stroke-width="25" fill="none" d="M275 60 L80 130 L80 250 C80 350 150 430 275 480 C400 430 470 350 470 250 L470 130 Z"/>
         </svg>
-        <h1 style="font-size:72px;font-weight:700;margin-bottom:8px;letter-spacing:-2px">1SAFE<span style="color:#FFC107">RE</span></h1>
-        <p style="color:#00B3FF;font-size:20px;margin-bottom:48px;letter-spacing:2px">REALTOR SAFETY FIRST</p>
-        <button class="btn btn-primary" onclick="app.showScreen('pricing')">TAP TO START</button>
+        
+        <h1 class="logo-powerup" style="font-size:72px;font-weight:700;margin-bottom:8px;letter-spacing:-2px;position:relative;z-index:1">1SAFE<span style="color:#FFC107">RE</span></h1>
+        <p class="logo-powerup" style="color:#00B3FF;font-size:20px;margin-bottom:48px;letter-spacing:2px;position:relative;z-index:1">REALTOR SAFETY FIRST</p>
+        
+        <div class="logo-powerup" style="background:rgba(0,179,255,.1);border:1px solid #00B3FF;border-radius:16px;padding:20px;max-width:380px;margin-bottom:32px;position:relative;z-index:1">
+            <h3 style="font-size:16px;color:#00B3FF;margin-bottom:12px;text-align:center">📱 Install as App</h3>
+            <p style="color:#d1d5db;font-size:13px;line-height:1.5;text-align:center">
+                <strong>iPhone/iPad:</strong> Tap Share → Add to Home Screen<br>
+                <strong>Android:</strong> Tap Menu (⋮) → Install App<br><br>
+                Enjoy fullscreen access without browser bars!
+            </p>
+        </div>
+        
+        <button class="btn btn-primary logo-powerup" style="position:relative;z-index:1" onclick="app.showScreen('pricing')">TAP TO START</button>
     </div>
 </div>
 
