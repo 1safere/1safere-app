@@ -116,10 +116,15 @@
 </div>
 
 <div id="home" class="screen">
+<div id="home" class="screen">
     <div class="container">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
             <div><h1 style="font-size:24px">1SafeRE</h1><p style="color:#9ca3af;font-size:14px">Stay protected, <span id="un">User</span></p></div>
-            <div style="display:flex;gap:8px"><span id="tb" style="background:#FFD700;color:#0b132b;padding:4px 12px;border-radius:20px;font-size:12px;display:none">TRIAL</span><button style="background:#1a1f36;border:none;padding:8px;border-radius:50%;cursor:pointer" onclick="app.showScreen('contacts')">👥</button></div>
+            <div style="display:flex;gap:8px">
+                <span id="tb" style="background:#FFD700;color:#0b132b;padding:4px 12px;border-radius:20px;font-size:12px;display:none">TRIAL</span>
+                <button style="background:#1a1f36;border:none;padding:8px;border-radius:50%;cursor:pointer" onclick="app.showScreen('contacts')">👥</button>
+                <button style="background:#dc2626;border:none;padding:8px;border-radius:50%;cursor:pointer" onclick="app.logout()" title="Logout">🚪</button>
+            </div>
         </div>
         <div class="police-light"></div>
         <div class="status-pill" id="st">
