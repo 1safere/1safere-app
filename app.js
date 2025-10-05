@@ -1,6 +1,5 @@
 import { auth, db, registerUser, loginUser, logoutUser, getUserData, addContact, removeContact, upgradeToPro, saveCheckIn } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-
 const CONFIG = {
     emailjs: {
         publicKey: 'ChER9DcNgZNpoWa3e',
