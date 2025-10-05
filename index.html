@@ -150,6 +150,7 @@
 </div>
 
 <div id="help" class="screen">
+<div id="help" class="screen">
     <div class="container">
         <button class="back-btn" onclick="app.showScreen('home')">← Back</button>
         <h1 style="font-size:32px;margin-bottom:24px">HELP & SAFETY</h1>
@@ -166,13 +167,57 @@
             </p>
             <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin-bottom:12px">
                 <strong>3. Location Tracking</strong><br>
-                Your GPS location is captured when you check in. This exact location (including street address) will be sent to your contacts if you trigger SOS.
+                Your GPS location is automatically captured when you check in. This exact location (including street address) will be sent to your contacts if you trigger SOS.
             </p>
             <p style="color:#d1d5db;font-size:14px;line-height:1.6">
                 <strong>4. Timer Alerts & Check-Out</strong><br>
                 When the timer expires, you'll be asked if you're safe. Tap "Check Out" when you leave safely. If you don't respond or indicate danger, SOS is triggered automatically.
             </p>
         </div>
+
+        <div style="background:rgba(255,43,78,.2);border:1px solid #FF2B4E;border-radius:16px;padding:20px;margin-bottom:16px">
+            <h3 style="font-size:20px;color:#FF2B4E;margin-bottom:12px">Emergency SOS</h3>
+            <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin-bottom:12px">
+                Tap the red "EMERGENCY SOS" button at any time if you feel unsafe. This will instantly:
+            </p>
+            <ul style="color:#d1d5db;font-size:14px;line-height:1.6;padding-left:20px">
+                <li>Send emergency emails to all your contacts with your exact location</li>
+                <li>Open SMS messages pre-filled with your location and emergency alert</li>
+                <li>Provide a direct link to call 911</li>
+                <li>Display your current address on screen for quick reference</li>
+            </ul>
+        </div>
+
+        <div style="background:#1a1f36;border-radius:16px;padding:20px;margin-bottom:16px">
+            <h3 style="font-size:20px;color:#00B3FF;margin-bottom:12px">Safety Best Practices</h3>
+            <p style="color:#d1d5db;font-size:14px;line-height:1.6">
+                • <strong>Always check in</strong> before entering any property<br>
+                • <strong>Keep phone charged</strong> and with you at all times<br>
+                • <strong>Trust your instincts</strong> - leave if something feels wrong<br>
+                • <strong>Verify clients</strong> before meeting them<br>
+                • <strong>Tell someone</strong> your schedule beyond just using this app<br>
+                • <strong>Meet in daylight</strong> when possible<br>
+                • <strong>Park in visible areas</strong> near exits<br>
+                • <strong>Don't go alone</strong> to vacant properties if possible
+            </p>
+        </div>
+
+        <div style="background:rgba(0,179,255,.1);border:1px solid #00B3FF;border-radius:16px;padding:20px">
+            <h3 style="font-size:20px;color:#00B3FF;margin-bottom:12px">Tips & Troubleshooting</h3>
+            <p style="color:#d1d5db;font-size:14px;line-height:1.6">
+                <strong>Location not working?</strong> Allow location permissions when your browser prompts you.<br><br>
+                <strong>Need more contacts?</strong> Upgrade to Pro for unlimited emergency contacts for just $3/month.<br><br>
+                <strong>How to test?</strong> Do a practice check-in with a trusted contact to ensure alerts work properly.<br><br>
+                <strong>Battery saving tip:</strong> Close other apps during showings to keep your phone powered longer.
+            </p>
+        </div>
+    </div>
+    <div class="bottom-nav">
+        <button class="nav-btn" onclick="app.navTo('home',event)">🛡️<br>HOME</button>
+        <button class="nav-btn" onclick="app.navTo('contacts',event)">👥<br>CONTACTS</button>
+        <button class="nav-btn active" onclick="app.navTo('help',event)">❓<br>HELP</button>
+    </div>
+</div>
 
         <div style="background:rgba(255,43,78,.2);border:1px solid #FF2B4E;border-radius:16px;padding:20px;margin-bottom:16px">
             <h3 style="font-size:20px;color:#FF2B4E;margin-bottom:12px">Emergency SOS</h3>
