@@ -1,0 +1,224 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Oswald', sans-serif;
+    background: linear-gradient(to bottom, #0b132b, #1c2541);
+    color: #fff;
+    min-height: 100vh;
+}
+
+.screen {
+    display: none;
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+.screen.active {
+    display: block;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.btn {
+    font-family: 'Oswald', sans-serif;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: .3s;
+}
+
+.btn-primary {
+    background: linear-gradient(to right, #00B3FF, #0099DD);
+    color: #fff;
+    padding: 16px 48px;
+    border-radius: 50px;
+    font-size: 18px;
+    box-shadow: 0 0 30px rgba(0, 179, 255, .5);
+}
+
+.btn-sos {
+    background: linear-gradient(to right, #FF2B4E, #E01B3F);
+    color: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    font-size: 24px;
+    width: 100%;
+    box-shadow: 0 0 40px rgba(255, 43, 78, .6);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+.input {
+    width: 100%;
+    padding: 16px 24px;
+    background: #1a1f36;
+    border: 2px solid #2a3142;
+    border-radius: 16px;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.input:focus {
+    outline: 0;
+    border-color: #00B3FF;
+}
+
+.card {
+    background: linear-gradient(135deg, #1a1f36, #252b42);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.status-pill {
+    background: linear-gradient(to right, #4a5568, #2d3748);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.status-pill.active {
+    background: linear-gradient(to right, #059669, #047857);
+}
+
+.back-btn {
+    background: 0 0;
+    border: none;
+    color: #00B3FF;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 16px;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0b132b;
+    border-top: 1px solid #2a3142;
+    padding: 16px;
+    display: flex;
+    justify-content: space-around;
+    max-width: 480px;
+    margin: 0 auto;
+    z-index: 1000;
+}
+
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: 0 0;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 10px;
+}
+
+.nav-btn.active {
+    color: #00B3FF;
+}
+
+.price-card {
+    background: linear-gradient(135deg, #2a3142, #1a1f36);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 2px solid #3a4152;
+    position: relative;
+}
+
+.price-card.featured {
+    background: linear-gradient(135deg, #00B3FF, #0099DD);
+    border-color: #00B3FF;
+    box-shadow: 0 0 40px rgba(0, 179, 255, .4);
+}
+
+.contact-card {
+    background: #1a1f36;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+#map {
+    width: 100%;
+    height: 240px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.notif {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #059669;
+    color: #fff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    z-index: 2000;
+    animation: slideIn .3s;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.police-light {
+    height: 3px;
+    background: linear-gradient(90deg, #FF2B4E 0%, #FF2B4E 50%, #00B3FF 50%, #00B3FF 100%);
+    margin-bottom: 10px;
+    border-radius: 2px;
+    animation: chase 2s linear infinite;
+    background-size: 200% 100%;
+    box-shadow: 0 0 10px rgba(255, 43, 78, 0.9), 0 0 20px rgba(0, 179, 255, 0.9);
+    filter: blur(0.5px);
+}
+
+@keyframes chase {
+    0% {
+        background-position: 0% 0;
+    }
+    50% {
+        background-position: 100% 0;
+    }
+    100% {
+        background-position: 0% 0;
+    }
+}
+
+.mapboxgl-ctrl-logo,
+.mapboxgl-ctrl-attrib {
+    display: none !important;
+}
