@@ -1,12 +1,12 @@
 // Configuration - UPDATE THESE WITH YOUR API KEYS
 const CONFIG = {
     emailjs: {
-        publicKey: 'YOUR_EMAILJS_PUBLIC_KEY',
-        serviceId: 'YOUR_SERVICE_ID',
-        templateId: 'YOUR_TEMPLATE_ID'
+        publicKey: 'ChER9DcNgZNpoWa3e',
+        serviceId: 'service_jcnx8sf',
+        templateId: 'template_xz0tfut'
     },
     mapbox: {
-        accessToken: 'YOUR_MAPBOX_ACCESS_TOKEN'
+        accessToken: 'pk.eyJ1IjoiMXNhZmVyZSIsImEiOiJjbWdkOHduNzQxbGhnMmlvY3dpczBzYXFwIn0.K7LYWTZy1mfvQAIVNPvpDg'
     }
 };
 
