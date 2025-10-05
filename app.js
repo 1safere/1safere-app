@@ -123,48 +123,51 @@ const app = {
     },
     
     triggerSOS() {
-        if (this.u.contacts.length === 0) { 
-            this.notif('No contacts!', 'error'); 
-            this.showScreen('contacts'); 
-            return;
+    if (this.u.contacts.length === 0) { 
+        this.notif('No contacts!', 'error'); 
+        this.showScreen('contacts'); 
+        return;
+    }
+    
+    const lat = this.u.loc ? this.u.loc.lat : 40.7128;
+    const lng = this.u.loc ? this.u.loc.lng : -74.006;
+    const ts = new Date().toLocaleString();
+    const ml = `https://maps.google.com/?q=${lat},${lng}`;
+    const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    
+    this.u.contacts.forEach(c => {
+        if (c.email) {
+            emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
+                to_email: c.email, 
+                to_name: c.name, 
+                user_name: this.u.name,
+                latitude: lat.toFixed(6), 
+                longitude: lng.toFixed(6), 
+                address: addr, 
+                time: ts, 
+                maps_link: ml
+            }).then(
+                () => console.log('Email sent successfully to:', c.email),
+                (error) => console.error('Email failed:', error)
+            );
         }
-        
-        const lat = this.u.loc ? this.u.loc.lat : 40.7128;
-        const lng = this.u.loc ? this.u.loc.lng : -74.006;
-        const ts = new Date().toLocaleString();
-        const ml = `https://maps.google.com/?q=${lat},${lng}`;
-        const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-        
-        this.u.contacts.forEach(c => {
-            if (c.email && CONFIG.emailjs.publicKey !== 'ChER9DcNgZNpoWa3e') {
-                emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
-                    to_email: c.email, 
-                    to_name: c.name, 
-                    user_name: this.u.name,
-                    latitude: lat.toFixed(6), 
-                    longitude: lng.toFixed(6), 
-                    address: addr, 
-                    time: ts, 
-                    maps_link: ml
-                }).catch(e => console.error('Email error:', e));
-            }
-            const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nLocation: ${addr}\nMaps: ${ml}\nTime: ${ts}\n\nCheck on me immediately!`);
-            setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
-        });
-        
-        const slElement = document.getElementById('sl');
-        const saElement = document.getElementById('sa');
-        
-        if (slElement) {
-            slElement.innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
-        }
-        
-        if (saElement) {
-            saElement.textContent = addr;
-        }
-        
-        this.showScreen('sos');
-    },
+        const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nLocation: ${addr}\nMaps: ${ml}\nTime: ${ts}\n\nCheck on me immediately!`);
+        setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
+    });
+    
+    const slElement = document.getElementById('sl');
+    const saElement = document.getElementById('sa');
+    
+    if (slElement) {
+        slElement.innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
+    }
+    
+    if (saElement) {
+        saElement.textContent = addr;
+    }
+    
+    this.showScreen('sos');
+},
     
     upgrade() {
         if (confirm('Upgrade to Pro for $3/month?\n\n(Demo - no charge)')) {
