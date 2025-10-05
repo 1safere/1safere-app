@@ -1,3 +1,6 @@
+import { auth, db, registerUser, loginUser, logoutUser, getUserData, addContact, removeContact, upgradeToPro, saveCheckIn } from './firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
 const CONFIG = {
     emailjs: {
         publicKey: 'ChER9DcNgZNpoWa3e',
@@ -13,7 +16,7 @@ emailjs.init(CONFIG.emailjs.publicKey);
 mapboxgl.accessToken = CONFIG.mapbox.accessToken;
 
 const app = {
-    u: { plan: 'trial', name: '', email: '', contacts: [], loc: null, address: '' },
+    u: { plan: 'trial', name: '', email: '', contacts: [], loc: null, address: '', userId: null },
     ci: false, t: 1800, tmr: null, map: null, marker: null,
     
     notif(msg, type = 'success') {
@@ -40,35 +43,79 @@ const app = {
     
     selectPlan(p) { this.u.plan = p; this.showScreen('register'); },
     
-    register() {
+    async register() {
         const n = document.getElementById('rn').value;
         const e = document.getElementById('re').value;
         const p = document.getElementById('rp').value;
-        if (!n || !e || p.length < 6) { this.notif('Fill all fields (password 6+ chars)', 'error'); return; }
-        this.u.name = n; this.u.email = e;
-        document.getElementById('un').textContent = n;
-        if (this.u.plan === 'trial') document.getElementById('tb').style.display = 'inline-block';
-        this.notif('Account created!'); this.showScreen('home');
+        
+        if (!n || !e || p.length < 6) { 
+            this.notif('Fill all fields (password 6+ chars)', 'error'); 
+            return; 
+        }
+        
+        try {
+            const user = await registerUser(n, e, p, this.u.plan);
+            this.u.userId = user.uid;
+            this.u.name = n;
+            this.u.email = e;
+            document.getElementById('un').textContent = n;
+            if (this.u.plan === 'trial') document.getElementById('tb').style.display = 'inline-block';
+            this.notif('Account created!');
+            this.showScreen('home');
+        } catch (error) {
+            this.notif(error.message, 'error');
+        }
     },
     
-    login() {
-        this.u.name = 'Demo User'; this.u.email = 'demo@1safere.com';
-        document.getElementById('un').textContent = this.u.name;
-        this.notif('Welcome back!'); this.showScreen('home');
+    async login() {
+        const e = document.getElementById('le').value;
+        const p = document.getElementById('lp').value;
+        
+        try {
+            const user = await loginUser(e, p);
+            const userData = await getUserData(user.uid);
+            this.u = { ...userData, userId: user.uid, loc: null, address: '' };
+            document.getElementById('un').textContent = userData.name;
+            if (userData.plan === 'trial') document.getElementById('tb').style.display = 'inline-block';
+            this.notif('Welcome back!');
+            this.showScreen('home');
+        } catch (error) {
+            this.notif(error.message, 'error');
+        }
+    },
+    
+    async logout() {
+        await logoutUser();
+        this.u = { plan: 'trial', name: '', email: '', contacts: [], loc: null, address: '', userId: null };
+        this.notif('Logged out');
+        this.showScreen('pricing');
     },
     
     startCheckIn() {
-        if (this.u.contacts.length === 0) { this.notif('Add emergency contact first!', 'error'); this.showScreen('contacts'); return; }
+        if (this.u.contacts.length === 0) { 
+            this.notif('Add emergency contact first!', 'error'); 
+            this.showScreen('contacts'); 
+            return; 
+        }
         this.ci = true; this.t = 1800;
         document.getElementById('stx').textContent = 'CHECKED IN';
         document.getElementById('st').classList.add('active');
         document.getElementById('dot').style.background = '#86efac';
         document.getElementById('tc').style.display = 'block';
         document.getElementById('cb').style.display = 'none';
+        
+        // Save check-in to Firebase
+        if (this.u.userId) {
+            saveCheckIn(this.u.userId, this.u.loc, this.u.address);
+        }
+        
         this.notif('Check-in started - 30 min');
         this.tmr = setInterval(() => {
             this.t--; this.updateTimer();
-            if (this.t <= 0) { clearInterval(this.tmr); confirm('Timer expired! Are you safe?') ? this.checkOut() : this.triggerSOS(); }
+            if (this.t <= 0) { 
+                clearInterval(this.tmr); 
+                confirm('Timer expired! Are you safe?') ? this.checkOut() : this.triggerSOS(); 
+            }
         }, 1000);
     },
     
@@ -90,7 +137,7 @@ const app = {
         this.notif('Checked out safely!');
     },
     
-    saveContact() {
+    async saveContact() {
         const n = document.getElementById('cn').value, p = document.getElementById('cp').value, e = document.getElementById('ce').value;
         if (!n || !p) { this.notif('Name and phone required!', 'error'); return; }
         if (this.u.plan === 'trial' && this.u.contacts.length >= 1) {
@@ -98,9 +145,19 @@ const app = {
             document.getElementById('ub').style.display = 'block';
             return;
         }
-        this.u.contacts.push({ name: n, phone: p, email: e });
-        document.getElementById('cn').value = ''; document.getElementById('cp').value = ''; document.getElementById('ce').value = '';
-        this.notif('Contact added!'); this.showScreen('contacts');
+        
+        const contact = { name: n, phone: p, email: e };
+        this.u.contacts.push(contact);
+        
+        if (this.u.userId) {
+            await addContact(this.u.userId, contact);
+        }
+        
+        document.getElementById('cn').value = ''; 
+        document.getElementById('cp').value = ''; 
+        document.getElementById('ce').value = '';
+        this.notif('Contact added!'); 
+        this.showScreen('contacts');
     },
     
     updateContacts() {
@@ -111,68 +168,87 @@ const app = {
             l.innerHTML = this.u.contacts.map((c, i) => `<div class="contact-card"><div style="display:flex;align-items:center"><div style="width:48px;height:48px;background:#00B3FF;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:16px">👤</div><div><p style="font-weight:700">${c.name}</p><p style="font-size:14px;color:#9ca3af">${c.phone}</p></div></div><button style="background:none;border:none;color:#FF2B4E;cursor:pointer;font-size:20px" onclick="app.delContact(${i})">×</button></div>`).join('');
         }
         if (this.u.plan === 'trial' && this.u.contacts.length >= 1) {
-            document.getElementById('ab').style.display = 'none'; document.getElementById('ub').style.display = 'block';
+            document.getElementById('ab').style.display = 'none'; 
+            document.getElementById('ub').style.display = 'block';
         } else {
-            document.getElementById('ab').style.display = 'block'; document.getElementById('ub').style.display = 'none';
+            document.getElementById('ab').style.display = 'block'; 
+            document.getElementById('ub').style.display = 'none';
         }
         document.getElementById('pt').textContent = this.u.plan === 'trial' ? 'Trial: 1 contact max' : 'Pro: Unlimited';
     },
     
-    delContact(i) {
-        if (confirm('Delete contact?')) { this.u.contacts.splice(i, 1); this.notif('Contact deleted'); this.updateContacts(); }
+    async delContact(i) {
+        if (confirm('Delete contact?')) { 
+            const contact = this.u.contacts[i];
+            this.u.contacts.splice(i, 1); 
+            
+            if (this.u.userId) {
+                await removeContact(this.u.userId, contact);
+            }
+            
+            this.notif('Contact deleted'); 
+            this.updateContacts(); 
+        }
     },
     
     triggerSOS() {
-    if (this.u.contacts.length === 0) { 
-        this.notif('No contacts!', 'error'); 
-        this.showScreen('contacts'); 
-        return;
-    }
-    
-    const lat = this.u.loc ? this.u.loc.lat : 40.7128;
-    const lng = this.u.loc ? this.u.loc.lng : -74.006;
-    const ts = new Date().toLocaleString();
-    const ml = `https://maps.google.com/?q=${lat},${lng}`;
-    const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    
-    this.u.contacts.forEach(c => {
-        if (c.email) {
-            emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
-                to_email: c.email, 
-                to_name: c.name, 
-                user_name: this.u.name,
-                latitude: lat.toFixed(6), 
-                longitude: lng.toFixed(6), 
-                address: addr, 
-                time: ts, 
-                maps_link: ml
-            }).then(
-                () => console.log('Email sent successfully to:', c.email),
-                (error) => console.error('Email failed:', error)
-            );
+        if (this.u.contacts.length === 0) { 
+            this.notif('No contacts!', 'error'); 
+            this.showScreen('contacts'); 
+            return;
         }
-        const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nLocation: ${addr}\nMaps: ${ml}\nTime: ${ts}\n\nCheck on me immediately!`);
-        setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
-    });
+        
+        const lat = this.u.loc ? this.u.loc.lat : 40.7128;
+        const lng = this.u.loc ? this.u.loc.lng : -74.006;
+        const ts = new Date().toLocaleString();
+        const ml = `https://maps.google.com/?q=${lat},${lng}`;
+        const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        
+        this.u.contacts.forEach(c => {
+            if (c.email) {
+                emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
+                    to_email: c.email, 
+                    to_name: c.name, 
+                    user_name: this.u.name,
+                    latitude: lat.toFixed(6), 
+                    longitude: lng.toFixed(6), 
+                    address: addr, 
+                    time: ts, 
+                    maps_link: ml
+                }).then(
+                    () => console.log('Email sent to:', c.email),
+                    (error) => console.error('Email failed:', error)
+                );
+            }
+            const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nLocation: ${addr}\nMaps: ${ml}\nTime: ${ts}\n\nCheck on me immediately!`);
+            setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
+        });
+        
+        const slElement = document.getElementById('sl');
+        const saElement = document.getElementById('sa');
+        
+        if (slElement) {
+            slElement.innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
+        }
+        
+        if (saElement) {
+            saElement.textContent = addr;
+        }
+        
+        this.showScreen('sos');
+    },
     
-    const slElement = document.getElementById('sl');
-    const saElement = document.getElementById('sa');
-    
-    if (slElement) {
-        slElement.innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
-    }
-    
-    if (saElement) {
-        saElement.textContent = addr;
-    }
-    
-    this.showScreen('sos');
-},
-    
-    upgrade() {
+    async upgrade() {
         if (confirm('Upgrade to Pro for $3/month?\n\n(Demo - no charge)')) {
-            this.u.plan = 'pro'; document.getElementById('tb').style.display = 'none';
-            this.notif('Upgraded to Pro!'); this.updateContacts();
+            this.u.plan = 'pro'; 
+            document.getElementById('tb').style.display = 'none';
+            
+            if (this.u.userId) {
+                await upgradeToPro(this.u.userId);
+            }
+            
+            this.notif('Upgraded to Pro!'); 
+            this.updateContacts();
         }
     },
     
@@ -202,9 +278,25 @@ const app = {
     }
 };
 
+// Listen for auth state changes
+onAuthStateChanged(auth, async (user) => {
+    if (user && !app.u.userId) {
+        const userData = await getUserData(user.uid);
+        app.u = { ...userData, userId: user.uid, loc: null, address: '' };
+        document.getElementById('un').textContent = userData.name;
+        if (userData.plan === 'trial') document.getElementById('tb').style.display = 'inline-block';
+        app.showScreen('home');
+    } else if (!user) {
+        app.showScreen('splash');
+    }
+});
+
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
         p => { app.u.loc = { lat: p.coords.latitude, lng: p.coords.longitude }; app.initMap(app.u.loc.lat, app.u.loc.lng); },
         () => { const f = { lat: 40.7128, lng: -74.006 }; app.u.loc = f; app.initMap(f.lat, f.lng); document.getElementById('addr').textContent = '📍 Location unavailable'; }
     );
-                    }
+}
+
+// Make app globally accessible
+window.app = app;
