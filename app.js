@@ -123,51 +123,48 @@ const app = {
     },
     
     triggerSOS() {
-    if (this.u.contacts.length === 0) { 
-        this.notif('No contacts!', 'error'); 
-        this.showScreen('contacts'); 
-        return; 
-    },
-    
-    const lat = this.u.loc ? this.u.loc.lat : 40.7128;
-    const lng = this.u.loc ? this.u.loc.lng : -74.006;
-    const ts = new Date().toLocaleString();
-    const ml = `https://maps.google.com/?q=${lat},${lng}`;
-    const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-    
-    // Send alerts
-    this.u.contacts.forEach(c => {
-        if (c.email && CONFIG.emailjs.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
-            emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
-                to_email: c.email, 
-                to_name: c.name, 
-                user_name: this.u.name,
-                latitude: lat.toFixed(6), 
-                longitude: lng.toFixed(6), 
-                address: addr, 
-                time: ts, 
-                maps_link: ml
-            }).catch(e => console.error('Email error:', e));
+        if (this.u.contacts.length === 0) { 
+            this.notif('No contacts!', 'error'); 
+            this.showScreen('contacts'); 
+            return;
         }
-        const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nLocation: ${addr}\nMaps: ${ml}\nTime: ${ts}\n\nCheck on me immediately!`);
-        setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
-    });
-    
-    // Update SOS screen elements
-    const slElement = document.getElementById('sl');
-    const saElement = document.getElementById('sa');
-    
-    if (slElement) {
-        slElement.innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
-    }
-    
-    if (saElement) {
-        saElement.textContent = addr;
-    }
-    
-    // Show SOS screen
-    this.showScreen('sos');
-}
+        
+        const lat = this.u.loc ? this.u.loc.lat : 40.7128;
+        const lng = this.u.loc ? this.u.loc.lng : -74.006;
+        const ts = new Date().toLocaleString();
+        const ml = `https://maps.google.com/?q=${lat},${lng}`;
+        const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        
+        this.u.contacts.forEach(c => {
+            if (c.email && CONFIG.emailjs.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+                emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
+                    to_email: c.email, 
+                    to_name: c.name, 
+                    user_name: this.u.name,
+                    latitude: lat.toFixed(6), 
+                    longitude: lng.toFixed(6), 
+                    address: addr, 
+                    time: ts, 
+                    maps_link: ml
+                }).catch(e => console.error('Email error:', e));
+            }
+            const msg = encodeURIComponent(`🚨 EMERGENCY from ${this.u.name}\n\nLocation: ${addr}\nMaps: ${ml}\nTime: ${ts}\n\nCheck on me immediately!`);
+            setTimeout(() => window.open(`sms:${c.phone}?&body=${msg}`, '_blank'), 100);
+        });
+        
+        const slElement = document.getElementById('sl');
+        const saElement = document.getElementById('sa');
+        
+        if (slElement) {
+            slElement.innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
+        }
+        
+        if (saElement) {
+            saElement.textContent = addr;
+        }
+        
+        this.showScreen('sos');
+    },
     
     upgrade() {
         if (confirm('Upgrade to Pro for $3/month?\n\n(Demo - no charge)')) {
@@ -207,4 +204,4 @@ if (navigator.geolocation) {
         p => { app.u.loc = { lat: p.coords.latitude, lng: p.coords.longitude }; app.initMap(app.u.loc.lat, app.u.loc.lng); },
         () => { const f = { lat: 40.7128, lng: -74.006 }; app.u.loc = f; app.initMap(f.lat, f.lng); document.getElementById('addr').textContent = '📍 Location unavailable'; }
     );
-}
+                    }
