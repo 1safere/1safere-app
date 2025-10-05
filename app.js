@@ -136,7 +136,7 @@ const app = {
         const addr = this.u.address || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
         
         this.u.contacts.forEach(c => {
-            if (c.email && CONFIG.emailjs.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+            if (c.email && CONFIG.emailjs.publicKey !== 'ChER9DcNgZNpoWa3e') {
                 emailjs.send(CONFIG.emailjs.serviceId, CONFIG.emailjs.templateId, {
                     to_email: c.email, 
                     to_name: c.name, 
