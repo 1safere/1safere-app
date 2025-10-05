@@ -85,10 +85,27 @@ const app = {
     },
     
     async logout() {
-        await logoutUser();
-        this.u = { plan: 'trial', name: '', email: '', contacts: [], loc: null, address: '', userId: null };
-        this.notif('Logged out');
-        this.showScreen('pricing');
+        if (confirm('Are you sure you want to logout?')) {
+            // Clear any active timers
+            if (this.tmr) {
+                clearInterval(this.tmr);
+                this.tmr = null;
+            }
+            
+            // Reset check-in state
+            this.ci = false;
+            this.t = 1800;
+            
+            // Clear user data
+            await logoutUser();
+            this.u = { plan: 'trial', name: '', email: '', contacts: [], loc: null, address: '', userId: null };
+            
+            // Reset UI
+            document.getElementById('tb').style.display = 'none';
+            
+            this.notif('Logged out successfully');
+            this.showScreen('splash');
+        }
     },
     
     startCheckIn() {
