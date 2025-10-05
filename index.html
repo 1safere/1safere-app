@@ -19,47 +19,27 @@
 <div id="splash" class="screen active">
     <div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;overflow:hidden">
         
-        <!-- Circuit board background -->
-<svg class="circuit-bg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
-    <!-- Vertical lines with animation -->
-    <line x1="100" y1="0" x2="100" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.5s ease-out forwards"/>
-    <line x1="200" y1="0" x2="200" y2="600" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.7s ease-out forwards"/>
-    <line x1="300" y1="0" x2="300" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.3s ease-out forwards"/>
-    <line x1="400" y1="0" x2="400" y2="600" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.9s ease-out forwards"/>
-    <line x1="500" y1="0" x2="500" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.4s ease-out forwards"/>
-    <line x1="600" y1="0" x2="600" y2="600" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.8s ease-out forwards"/>
-    <line x1="700" y1="0" x2="700" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.6s ease-out forwards"/>
-    
-    <!-- Horizontal lines with animation -->
-    <line x1="0" y1="100" x2="800" y2="100" stroke="#00B3FF" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.6s ease-out forwards"/>
-    <line x1="0" y1="200" x2="800" y2="200" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.2s ease-out forwards"/>
-    <line x1="0" y1="300" x2="800" y2="300" stroke="#00B3FF" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.8s ease-out forwards"/>
-    <line x1="0" y1="400" x2="800" y2="400" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.5s ease-out forwards"/>
-    <line x1="0" y1="500" x2="800" y2="500" stroke="#00B3FF" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.3s ease-out forwards"/>
-    
-    <!-- Circuit nodes with fade-in -->
-    <circle cx="100" cy="100" r="10" fill="#00B3FF" opacity="0" style="animation: fadeIn 0.5s ease-out 1s forwards">
-        <animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1s" fill="freeze"/>
-    </circle>
-    <circle cx="200" cy="200" r="10" fill="#FF2B4E" opacity="0" style="animation: fadeIn 0.5s ease-out 1.2s forwards">
-        <animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.2s" fill="freeze"/>
-    </circle>
-    <circle cx="300" cy="300" r="10" fill="#00B3FF" opacity="0" style="animation: fadeIn 0.5s ease-out 1.4s forwards">
-        <animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.4s" fill="freeze"/>
-    </circle>
-    <circle cx="400" cy="100" r="10" fill="#FF2B4E" opacity="0" style="animation: fadeIn 0.5s ease-out 1.1s forwards">
-        <animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.1s" fill="freeze"/>
-    </circle>
-    <circle cx="500" cy="400" r="10" fill="#00B3FF" opacity="0" style="animation: fadeIn 0.5s ease-out 1.5s forwards">
-        <animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.5s" fill="freeze"/>
-    </circle>
-    <circle cx="600" cy="200" r="10" fill="#FF2B4E" opacity="0" style="animation: fadeIn 0.5s ease-out 1.3s forwards">
-        <animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.3s" fill="freeze"/>
-    </circle>
-    <circle cx="700" cy="500" r="10" fill="#00B3FF" opacity="0" style="animation: fadeIn 0.5s ease-out 1.6s forwards">
-        <animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.6s" fill="freeze"/>
-    </circle>
-</svg>
+        <svg class="circuit-bg" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+            <line x1="100" y1="0" x2="100" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.5s ease-out forwards"/>
+            <line x1="200" y1="0" x2="200" y2="600" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.7s ease-out forwards"/>
+            <line x1="300" y1="0" x2="300" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.3s ease-out forwards"/>
+            <line x1="400" y1="0" x2="400" y2="600" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.9s ease-out forwards"/>
+            <line x1="500" y1="0" x2="500" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.4s ease-out forwards"/>
+            <line x1="600" y1="0" x2="600" y2="600" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.8s ease-out forwards"/>
+            <line x1="700" y1="0" x2="700" y2="600" stroke="#00B3FF" stroke-width="3" stroke-dasharray="600" stroke-dashoffset="600" style="animation: pulseLines 1.6s ease-out forwards"/>
+            <line x1="0" y1="100" x2="800" y2="100" stroke="#00B3FF" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.6s ease-out forwards"/>
+            <line x1="0" y1="200" x2="800" y2="200" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.2s ease-out forwards"/>
+            <line x1="0" y1="300" x2="800" y2="300" stroke="#00B3FF" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.8s ease-out forwards"/>
+            <line x1="0" y1="400" x2="800" y2="400" stroke="#FF2B4E" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.5s ease-out forwards"/>
+            <line x1="0" y1="500" x2="800" y2="500" stroke="#00B3FF" stroke-width="3" stroke-dasharray="800" stroke-dashoffset="800" style="animation: pulseLines 1.3s ease-out forwards"/>
+            <circle cx="100" cy="100" r="10" fill="#00B3FF" opacity="0"><animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1s" fill="freeze"/></circle>
+            <circle cx="200" cy="200" r="10" fill="#FF2B4E" opacity="0"><animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.2s" fill="freeze"/></circle>
+            <circle cx="300" cy="300" r="10" fill="#00B3FF" opacity="0"><animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.4s" fill="freeze"/></circle>
+            <circle cx="400" cy="100" r="10" fill="#FF2B4E" opacity="0"><animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.1s" fill="freeze"/></circle>
+            <circle cx="500" cy="400" r="10" fill="#00B3FF" opacity="0"><animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.5s" fill="freeze"/></circle>
+            <circle cx="600" cy="200" r="10" fill="#FF2B4E" opacity="0"><animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.3s" fill="freeze"/></circle>
+            <circle cx="700" cy="500" r="10" fill="#00B3FF" opacity="0"><animate attributeName="opacity" from="0" to="0.9" dur="0.5s" begin="1.6s" fill="freeze"/></circle>
+        </svg>
         
         <svg class="logo-powerup" width="220" height="200" viewBox="0 0 550 500" style="filter:drop-shadow(0 0 30px rgba(0,179,255,.6));margin-bottom:32px;position:relative;z-index:1">
             <path fill="#00B3FF" stroke="#00B3FF" stroke-width="25" fill="none" d="M275 60 L80 130 L80 250 C80 350 150 430 275 480 C400 430 470 350 470 250 L470 130 Z"/>
@@ -72,7 +52,7 @@
             <h3 style="font-size:16px;color:#00B3FF;margin-bottom:12px;text-align:center">📱Install App</h3>
             <p style="color:#d1d5db;font-size:13px;line-height:1.5;text-align:center">
                 <strong>iPhone/iPad:</strong> Tap Share → Add to Home Screen<br>
-                <strong>Android:</strong> Tap Menu (⋮) → Install App<br><br>
+                <strong>Android:</strong> Tap Menu (⋮) → Install App
             </p>
         </div>
         
@@ -269,69 +249,6 @@
         </div>
     </div>
     <div class="bottom-nav">
-<div id="help" class="screen">
-    <div class="container">
-        <button class="back-btn" onclick="app.showScreen('home')">← Back</button>
-        <h1 style="font-size:32px;margin-bottom:24px">HELP & SAFETY</h1>
-        
-        <div style="background:#1a1f36;border-radius:16px;padding:20px;margin-bottom:16px">
-            <h3 style="font-size:20px;color:#00B3FF;margin-bottom:12px">How It Works</h3>
-            <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin-bottom:12px">
-                <strong>1. Add Emergency Contacts</strong><br>
-                Add trusted contacts who will receive alerts if something goes wrong. Trial users can add 1 contact, Pro users get unlimited contacts.
-            </p>
-            <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin-bottom:12px">
-                <strong>2. Check-In Before Showings</strong><br>
-                Before entering a property, tap "Start Check-In". A 30-minute timer begins. You can extend time in 15-minute increments if needed.
-            </p>
-            <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin-bottom:12px">
-                <strong>3. Location Tracking</strong><br>
-                Your GPS location is automatically captured when you check in. This exact location (including street address) will be sent to your contacts if you trigger SOS.
-            </p>
-            <p style="color:#d1d5db;font-size:14px;line-height:1.6">
-                <strong>4. Timer Alerts & Check-Out</strong><br>
-                When the timer expires, you'll be asked if you're safe. Tap "Check Out" when you leave safely. If you don't respond or indicate danger, SOS is triggered automatically.
-            </p>
-        </div>
-
-        <div style="background:rgba(255,43,78,.2);border:1px solid #FF2B4E;border-radius:16px;padding:20px;margin-bottom:16px">
-            <h3 style="font-size:20px;color:#FF2B4E;margin-bottom:12px">Emergency SOS</h3>
-            <p style="color:#d1d5db;font-size:14px;line-height:1.6;margin-bottom:12px">
-                Tap the red "EMERGENCY SOS" button at any time if you feel unsafe. This will instantly:
-            </p>
-            <ul style="color:#d1d5db;font-size:14px;line-height:1.6;padding-left:20px">
-                <li>Send emergency emails to all your contacts with your exact location</li>
-                <li>Open SMS messages pre-filled with your location and emergency alert</li>
-                <li>Provide a direct link to call 911</li>
-                <li>Display your current address on screen for quick reference</li>
-            </ul>
-        </div>
-
-        <div style="background:#1a1f36;border-radius:16px;padding:20px;margin-bottom:16px">
-            <h3 style="font-size:20px;color:#00B3FF;margin-bottom:12px">Safety Best Practices</h3>
-            <p style="color:#d1d5db;font-size:14px;line-height:1.6">
-                • <strong>Always check in</strong> before entering any property<br>
-                • <strong>Keep phone charged</strong> and with you at all times<br>
-                • <strong>Trust your instincts</strong> - leave if something feels wrong<br>
-                • <strong>Verify clients</strong> before meeting them<br>
-                • <strong>Tell someone</strong> your schedule beyond just using this app<br>
-                • <strong>Meet in daylight</strong> when possible<br>
-                • <strong>Park in visible areas</strong> near exits<br>
-                • <strong>Don't go alone</strong> to vacant properties if possible
-            </p>
-        </div>
-
-        <div style="background:rgba(0,179,255,.1);border:1px solid #00B3FF;border-radius:16px;padding:20px">
-            <h3 style="font-size:20px;color:#00B3FF;margin-bottom:12px">Tips & Troubleshooting</h3>
-            <p style="color:#d1d5db;font-size:14px;line-height:1.6">
-                <strong>Location not working?</strong> Allow location permissions when your browser prompts you.<br><br>
-                <strong>Need more contacts?</strong> Upgrade to Pro for unlimited emergency contacts for just $3/month.<br><br>
-                <strong>How to test?</strong> Do a practice check-in with a trusted contact to ensure alerts work properly.<br><br>
-                <strong>Battery saving tip:</strong> Close other apps during showings to keep your phone powered longer.
-            </p>
-        </div>
-    </div>
-    <div class="bottom-nav">
         <button class="nav-btn" onclick="app.navTo('home',event)">🛡️<br>HOME</button>
         <button class="nav-btn" onclick="app.navTo('contacts',event)">👥<br>CONTACTS</button>
         <button class="nav-btn active" onclick="app.navTo('help',event)">❓<br>HELP</button>
@@ -356,3 +273,5 @@
 </div>
 
 <script src="app.js"></script>
+</body>
+</html>
