@@ -123,12 +123,11 @@ const app = {
     },
     
     triggerSOS() {
-    triggerSOS() {
     if (this.u.contacts.length === 0) { 
         this.notif('No contacts!', 'error'); 
         this.showScreen('contacts'); 
         return; 
-    }
+    },
     
     const lat = this.u.loc ? this.u.loc.lat : 40.7128;
     const lng = this.u.loc ? this.u.loc.lng : -74.006;
