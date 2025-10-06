@@ -1,6 +1,19 @@
 import { auth, db, registerUser, loginUser, logoutUser, getUserData, addContact, removeContact, upgradeToPro, saveCheckIn } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
+// Stripe configuration - create this file if you want to use Stripe
+let stripe = null;
+let STRIPE_CONFIG = null;
+
+// Try to import Stripe config, but don't fail if it doesn't exist
+try {
+    const stripeModule = await import('./stripe-config.js');
+    stripe = stripeModule.stripe;
+    STRIPE_CONFIG = stripeModule.STRIPE_CONFIG;
+} catch (e) {
+    console.log('Stripe not configured - using demo mode');
+}
+
 const CONFIG = {
     emailjs: {
         publicKey: 'ChER9DcNgZNpoWa3e',
@@ -108,25 +121,73 @@ const app = {
     
     async logout() {
         if (confirm('Are you sure you want to logout?')) {
-            // Clear any active timers
             if (this.tmr) {
                 clearInterval(this.tmr);
                 this.tmr = null;
             }
             
-            // Reset check-in state
             this.ci = false;
             this.t = 1800;
             
-            // Clear user data
             await logoutUser();
             this.u = { plan: 'trial', name: '', email: '', contacts: [], loc: null, address: '', userId: null };
             
-            // Reset UI
             document.getElementById('tb').style.display = 'none';
             
             this.notif('Logged out successfully');
             this.showScreen('splash');
+        }
+    },
+    
+    async upgrade() {
+        if (!this.u.userId) {
+            this.notif('Please login first', 'error');
+            return;
+        }
+
+        // Check if Stripe is configured
+        if (stripe && STRIPE_CONFIG) {
+            try {
+                // Real Stripe payment flow
+                const response = await fetch('https://YOUR_CLOUD_FUNCTION_URL/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: this.u.userId,
+                        email: this.u.email,
+                        priceId: STRIPE_CONFIG.priceId
+                    })
+                });
+
+                const session = await response.json();
+
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+
+                if (result.error) {
+                    this.notif(result.error.message, 'error');
+                }
+            } catch (error) {
+                console.error('Upgrade error:', error);
+                this.notif('Payment failed. Please try again.', 'error');
+            }
+        } else {
+            // Demo mode - no actual payment
+            if (confirm('Upgrade to Pro for $3/month?\n\n(Demo - no charge)')) {
+                this.u.plan = 'pro'; 
+                document.getElementById('tb').style.display = 'none';
+                
+                if (this.u.userId) {
+                    await upgradeToPro(this.u.userId);
+                }
+                
+                this.notif('Upgraded to Pro!'); 
+                this.updateContacts();
+            }
         }
     },
     
@@ -301,20 +362,6 @@ const app = {
         document.getElementById('sl').innerHTML = this.u.contacts.map(c => `<p style="margin-bottom:8px">✓ ${c.name} - ${c.email || c.phone}</p>`).join('');
         document.getElementById('sa').innerHTML = `<strong>${addr}</strong><br><small>${lat.toFixed(6)}, ${lng.toFixed(6)}</small>`;
         this.showScreen('sos');
-    },
-    
-    async upgrade() {
-        if (confirm('Upgrade to Pro for $3/month?\n\n(Demo - no charge)')) {
-            this.u.plan = 'pro'; 
-            document.getElementById('tb').style.display = 'none';
-            
-            if (this.u.userId) {
-                await upgradeToPro(this.u.userId);
-            }
-            
-            this.notif('Upgraded to Pro!'); 
-            this.updateContacts();
-        }
     },
     
     initMap(lat, lng) {
