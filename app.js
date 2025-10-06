@@ -5,14 +5,16 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/fi
 let stripe = null;
 let STRIPE_CONFIG = null;
 
-// Try to import Stripe config, but don't fail if it doesn't exist
-try {
-    const stripeModule = await import('./stripe-config.js');
-    stripe = stripeModule.stripe;
-    STRIPE_CONFIG = stripeModule.STRIPE_CONFIG;
-} catch (e) {
-    console.log('Stripe not configured - using demo mode');
-}
+// Async function to load Stripe config
+(async () => {
+    try {
+        const stripeModule = await import('./stripe-config.js');
+        stripe = stripeModule.stripe;
+        STRIPE_CONFIG = stripeModule.STRIPE_CONFIG;
+    } catch (e) {
+        console.log('Stripe not configured - using demo mode');
+    }
+})();
 
 const CONFIG = {
     emailjs: {
@@ -396,7 +398,23 @@ onAuthStateChanged(auth, async (user) => {
         app.u = { ...userData, userId: user.uid, loc: null, address: '' };
         document.getElementById('un').textContent = userData.name;
         if (userData.plan === 'trial') document.getElementById('tb').style.display = 'inline-block';
-        app.showScreen('home');
+        
+        // Check for Stripe redirect after user is loaded
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success')) {
+            app.showScreen('payment-success');
+            await upgradeToPro(app.u.userId);
+            app.u.plan = 'pro';
+            document.getElementById('tb').style.display = 'none';
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (urlParams.get('canceled')) {
+            app.showScreen('payment-cancel');
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else {
+            app.showScreen('home');
+        }
     } else if (!user) {
         app.showScreen('splash');
     }
