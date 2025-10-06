@@ -1,0 +1,17 @@
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firestore-debug.log
+
+# Functions
+functions/node_modules/
+functions/.env
+functions/.runtimeconfig.json
+
+# Sensitive files
+stripe-config.js
+firebase-config.js
+
+# Dependencies
+node_modules/
